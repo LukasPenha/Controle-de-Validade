@@ -1,0 +1,46 @@
+<div class="card mb-4">
+    <div class="card-header">Cadastrar Novo Produto</div>
+    <div class="card-body">
+        <div class="border p-3 mb-4 rounded bg-light">
+            <h6>Buscar por Código de Barras</h6>
+            <div class="input-group">
+                <input type="text" class="form-control" id="barcodeInput" placeholder="Digite ou leia o código de barras">
+                <button class="btn btn-outline-secondary" type="button" id="btnBuscarBarcode">
+                    <i class="bi bi-search"></i> Buscar Informações
+                </button>
+            </div>
+            <div class="mt-2">
+                <button class="btn btn-success" id="btnIniciarScan"><i class="bi bi-camera-video"></i> Escanear Código</button>
+                <button class="btn btn-danger" id="btnPararScan" style="display: none;"><i class="bi bi-stop-circle"></i> Parar Câmera</button>
+            </div>
+            <div id="statusBusca" class="form-text mt-1"></div>
+            <video id="video" style="display: none; width: 100%; border-radius: 5px; margin-top: 10px;"></video>
+        </div>
+
+        <form method="POST" action="{{ url_for('routes.cadastrar_produto') }}">
+            <input type="hidden" name="barcode" id="barcodeFormInput">
+            
+            <div class="mb-2"><label class="form-label">Nome do Produto</label><input type="text" id="nome_produto" name="nome_produto" class="form-control" required></div>
+            <div class="mb-2"><label class="form-label">PLU / Código</label><input type="text" id="plu" name="plu" class="form-control" required></div>
+            
+            {% if current_user.role in ['auxiliar_gestao', 'gerente'] %}
+            <div class="mb-2">
+                <label class="form-label">Setor</label>
+                <select name="setor_id" class="form-select" required>
+                    <option value="">Selecione...</option>
+                    {% for setor in setores %}
+                    <option value="{{ setor.id }}">{{ setor.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+
+            <div class="row g-2">
+                <div class="col-md"><label class="form-label">Quantidade</label><input type="number" name="quantidade" class="form-control" required></div>
+                <div class="col-md"><label class="form-label">Validade</label><input type="date" name="validade" class="form-control" required></div>
+            </div>
+            <div class="mt-2"><label class="form-label">Motivo da Rebaixa (Opcional)</label><input type="text" name="motivo_rebaixa" class="form-control"></div>
+            <button type="submit" class="btn btn-primary w-100 mt-3">Cadastrar Produto</button>
+        </form>
+    </div>
+</div>
